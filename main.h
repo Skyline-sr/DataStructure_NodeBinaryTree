@@ -9,7 +9,16 @@
 #define OVERFLOW -2
 
 typedef int Status;
-typedef int QElemType;
+typedef int TElemType;
+typedef int Mode;
+
+typedef struct BiTNode {
+	TElemType data;
+	struct BiTNode* lchild;
+	struct BiTNode* rchild;
+}BiTNode, * BiTree;
+
+typedef BiTree SElemType;
 
 #endif
 

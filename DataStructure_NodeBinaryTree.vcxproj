@@ -142,8 +142,10 @@
     <ClCompile Include="DataStructure_NodeBinaryTree.c">
       <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</SDLCheck>
     </ClCompile>
+    <ClCompile Include="SqStack.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SqStack.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

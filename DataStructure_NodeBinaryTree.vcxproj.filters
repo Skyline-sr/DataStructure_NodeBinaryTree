@@ -18,9 +18,15 @@
     <ClCompile Include="DataStructure_NodeBinaryTree.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="SqStack.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="SqStack.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
