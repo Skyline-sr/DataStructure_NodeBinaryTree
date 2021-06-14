@@ -16,9 +16,11 @@ typedef struct BiTNode {
 	TElemType data;
 	struct BiTNode* lchild;
 	struct BiTNode* rchild;
+	int depth;
 }BiTNode, * BiTree;
 
 typedef BiTree SElemType;
+typedef BiTree QElemType;
 
 #endif
 

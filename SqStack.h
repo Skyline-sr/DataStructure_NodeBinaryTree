@@ -17,7 +17,6 @@ Status DestroyStack(SqStack* S);
 Status Push(SqStack* S, SElemType x);
 Status Pop(SqStack* S, SElemType* x);
 Status GetTop(SqStack* S, SElemType* x);
-void PrintStack(SqStack S);
 
 #endif
 

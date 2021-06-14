@@ -82,14 +82,3 @@ Status GetTop(SqStack* S, SElemType* x) {
 	*x = *(S->top - 1);
 	return OK;
 }
-
-void PrintStack(SqStack S) {
-	int length, i;
-	length = StackLength(S);
-	printf("栈中的元素如下：\n");
-	for (i = length; i > 0; i--)
-	{
-		S.top--;
-		printf("第%d个位置的元素：%d\n", i, *S.top);
-	}
-}
