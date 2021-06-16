@@ -9,7 +9,7 @@
 #define NOHANDLE_BITREE -1
 #define DE_BITREE 0
 #define NUM_BITREE 1
-#define INSERT_BITREE 2
+#define SEARCH_BITREE 2
 #define PRINT_BITREE 3
 #define PRINT_TRAVERSE_BITREE 4
 
@@ -23,12 +23,14 @@ static BiTree Node_Find;
 static TElemType Node_Search;
 static int bitree_line_number[MAXSIZE_LINE] = { 0 };
 static int bitree_line_number_fordatahandle[MAXSIZE_LINE] = { 0 };
+static SqStack delet_bitree_stack;
 
 Status InitBiTree(BiTree* T);
 Status DestroyBiTree(BiTree* T);
 Status BiTreeEmpty(BiTree T);
 Status InsertRoot(BiTree* T, TElemType x);
 Status InsertChild(BiTree* T, TElemType Node, TElemType x, int depth, int l_or_r);
+Status DeleteChild(BiTree* T, TElemType Node, int depth, int l_or_r);
 int BiTreeNodeNumber(BiTree T);
 int BiTreeDepth(BiTree T);
 void PrintBiTree(BiTree T);
@@ -48,30 +50,59 @@ void DataHandle(BiTree* Node, Mode mode);
 void main() {
 	BiTree T;
 	InitBiTree(&T);
+
 	InsertRoot(&T, 1);
 	InsertChild(&T, 1, 2, 2, LC);
 	InsertChild(&T, 1, 3, 2, RC);
 	InsertChild(&T, 2, 4, 3, RC);
+
 	PreOrderTraverse_Recursion(&T, NOHANDLE_BITREE);
+
+	printf("先序递归打印：\n");
 	PreOrderTraverse_Recursion(&T, PRINT_TRAVERSE_BITREE);
 	printf("\n\n");
+	printf("先序非递归打印：\n");
 	PreOrderTraverse_NonRecursion(&T, PRINT_TRAVERSE_BITREE);
 	printf("\n\n");
+	printf("中序递归打印：\n");
 	InOrderTraverse_Recursion(&T, PRINT_TRAVERSE_BITREE);
 	printf("\n\n");
+	printf("中序非递归打印：\n");
 	InOrderTraverse_NonRecursion(&T, PRINT_TRAVERSE_BITREE);
 	printf("\n\n");
+	printf("后序递归打印：\n");
 	PostOrderTraverse_Recursion(&T, PRINT_TRAVERSE_BITREE);
 	printf("\n\n");
+	printf("后序非递归打印：\n");
 	PostOrderTraverse_NonRecursion(&T, PRINT_TRAVERSE_BITREE);
 	printf("\n\n");
+	printf("层次遍历打印：\n");
 	LevelOrderTraverse(&T, PRINT_TRAVERSE_BITREE);
 	printf("\n\n");
+
+	printf("层次遍历有深度显示打印：\n");
 	PrintBiTree(T);
+	printf("\n\n");
+
+	DeleteChild(&T, 2, 3, RC);
+	printf("删除后结果：\n");
+	PrintBiTree(T);
+	printf("\n\n");
+
+	UpdateNode(&T, 3, 31);
+	printf("更新后结果：\n");
+	PrintBiTree(T);
+	printf("\n\n");
+	
+	DestroyBiTree(&T);
+	printf("销毁后结果：\n");
+	PrintBiTree(T);
+	printf("\n\n");
 }
 
 Status InitBiTree(BiTree* T) {  //创建空树
 	*T = NULL;
+	InitStack(&delet_bitree_stack);
 	return OK;
 }
 
@@ -80,7 +111,13 @@ Status DestroyBiTree(BiTree* T) {
 	{
 		return ERROR;
 	}
+	BiTree p;
 	PreOrderTraverse_Recursion(T, DE_BITREE);
+	while (!StackEmpty(delet_bitree_stack))
+	{
+		Pop(&delet_bitree_stack, &p);
+		free(p);
+	}
 	*T = NULL;
 	return OK;
 }
@@ -118,7 +155,7 @@ Status InsertChild(BiTree* T, TElemType Node, TElemType x, int depth, int l_or_r
 	}
 	BiTree p;
 	Node_Search = Node;
-	PreOrderTraverse_Recursion(T, INSERT_BITREE);
+	PreOrderTraverse_Recursion(T, SEARCH_BITREE);
 	if (Node_Find)
 	{
 		p = (BiTree)malloc(sizeof(BiTNode));
@@ -134,6 +171,49 @@ Status InsertChild(BiTree* T, TElemType Node, TElemType x, int depth, int l_or_r
 			Node_Find->rchild = p;
 		}
 		bitree_line_number[depth]++;
+	}
+	Node_Search = -1;
+	Node_Find = NULL;
+}
+
+Status DeleteChild(BiTree* T, TElemType Node, int depth, int l_or_r) {
+	if ((*T) == NULL)
+	{
+		return ERROR;
+	}
+	BiTree p;
+	Node_Search = Node;
+	PreOrderTraverse_Recursion(T, SEARCH_BITREE);
+	if (Node_Find)
+	{
+		if (!l_or_r)
+		{
+			p = Node_Find->lchild;
+			Node_Find->lchild = NULL;
+			free(p);
+		}
+		else
+		{
+			p = Node_Find->rchild;
+			Node_Find->rchild = NULL;
+			free(p);
+		}
+		bitree_line_number[depth]--;
+	}
+	Node_Search = -1;
+	Node_Find = NULL;
+}
+
+Status UpdateNode(BiTree* T, TElemType Node, TElemType x) {
+	if ((*T) == NULL)
+	{
+		return ERROR;
+	}
+	Node_Search = Node;
+	PreOrderTraverse_Recursion(T, SEARCH_BITREE);
+	if (Node_Find)
+	{
+		Node_Find->data = x;
 	}
 	Node_Search = -1;
 	Node_Find = NULL;
@@ -300,12 +380,12 @@ void DataHandle(BiTree* Node, Mode mode) {
 	switch (mode)
 	{
 	case DE_BITREE:
-		free(p);
+		Push(&delet_bitree_stack, p);
 		break;
 	case NUM_BITREE:
 		bitree_node_number++;
 		break;
-	case INSERT_BITREE:
+	case SEARCH_BITREE:
 		if (Node_Search == p->data)
 		{
 			Node_Find = p;
